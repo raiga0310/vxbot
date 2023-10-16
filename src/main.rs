@@ -53,14 +53,15 @@ impl EventHandler for Handler {
             return;
         }
 
-        //if msg have "https://twitter.com", replace all "https://twitter.com" to "https://vxtwitter.com" and reply
-        if !msg.content.contains("https://twitter.com") {
+        //if msg have "https://twitter.com", replace all "https://twitter.com" or "https://x.com" to "https://vxtwitter.com" and reply
+        if !(msg.content.contains("https://twitter.com") || msg.content.contains("https://x.com")) {
             return;
         }
 
-        let reply = msg
+        let mut reply = msg
             .content
             .replace("https://twitter.com", "https://vxtwitter.com");
+        reply = reply.replace("https://x.com", "https://vxtwitter.com");
         check_msg(msg.reply(&_ctx.http, reply).await);
     }
 }
