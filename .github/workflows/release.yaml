@@ -19,7 +19,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ahoxa1rx
+          username: ${{ github.repository_owner }}
           password: ${{ github.token }}
 
       - name: Build and push
@@ -27,4 +27,4 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/ahoxa1rx/vxbot:latest
+            ghcr.io/raiga0310/vxbot:latest
