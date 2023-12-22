@@ -1,3 +1,4 @@
+use regex::Regex;
 use serenity::{
     async_trait,
     framework::{
@@ -53,15 +54,10 @@ impl EventHandler for Handler {
             return;
         }
 
-        //if msg have "https://twitter.com", replace all "https://twitter.com" or "https://x.com" to "https://vxtwitter.com" and reply
-        if !(msg.content.contains("https://twitter.com") || msg.content.contains("https://x.com")) {
+        let Some((username, hash)) = match_url(&msg.content) else {
             return;
-        }
-
-        let mut reply = msg
-            .content
-            .replace("https://twitter.com", "https://vxtwitter.com");
-        reply = reply.replace("https://x.com", "https://vxtwitter.com");
+        };
+        let reply = format!("https://vxtwitter.com/{}/status/{}\n", username, hash);
         check_msg(msg.reply(&_ctx.http, reply).await);
     }
 }
@@ -75,5 +71,31 @@ fn load_token() -> String {
 fn check_msg(result: Result<Message>) {
     if let Err(why) = result {
         println!("Error sending message: {:?}", why);
+    }
+}
+
+// 正規表現マッチングを行う関数
+fn match_url(content: &str) -> Option<(String, String)> {
+    let regex = Regex::new(
+        r"https:\/\/(x|twitter)\.com\/(?<username>[a-zA-Z0-9_]{1,16})\/status\/(?<hash>[0-9]+)",
+    )
+    .unwrap();
+
+    regex
+        .captures(content)
+        .map(|caps| (caps["username"].to_string(), caps["hash"].to_string()))
+}
+
+// テスト関数
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_match_url() {
+        let content = "text https://twitter.com/user123/status/12345678 text";
+        let (username, hash) = match_url(content).unwrap();
+        assert_eq!(username, "user123");
+        assert_eq!(hash, "12345678");
     }
 }
