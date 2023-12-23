@@ -25,9 +25,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: |
-            ghcr.io/raiga0310/vxbot:${{ github.workspace }}/Cargo.toml.version
+      - name: Push Docker image
+        run: |
+          VERSION=$(grep version Cargo.toml | cut -d'"' -f2)
+          docker push ghcr.io/${{ github.repository }}:$VERSION
