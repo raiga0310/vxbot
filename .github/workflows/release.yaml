@@ -30,4 +30,4 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/raiga0310/vxbot:latest
+            ghcr.io/raiga0310/vxbot:${{ github.workspace }}/Cargo.toml.version
