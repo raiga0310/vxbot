@@ -28,7 +28,7 @@ jobs:
       - name: get Cargo.toml version
         id: get_version
         run: |
-          VERSION=$(grep -m 1 version Cargo.toml | cut -d'"' -f2)
+          export VERSION=$(grep -m 1 version Cargo.toml | cut -d'"' -f2)
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
