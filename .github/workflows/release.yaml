@@ -27,7 +27,9 @@ jobs:
 
       - name: extract version from Cargo.toml
         id: vars
-        run: echo "version = $(grep '^version = ' Cargo.toml | sed 's/version = "\(.*\)"/\1/')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(grep '^version = ' Cargo.toml | sed 's/version = "\(.*\)"/\1/')" >> "$GITHUB_OUTPUT"
+      - name: print version
+        run: echo ${{ steps.vars.outputs.version }}
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
